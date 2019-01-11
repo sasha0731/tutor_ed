@@ -1,3 +1,1 @@
-# tutor_ed
-
-TutorED
+# TutorED
