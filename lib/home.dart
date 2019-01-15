@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -7,6 +8,18 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
+  SharedPreferences prefs;
+  String name = '';
+  @override
+  void initState() {
+    super.initState();
+    readLocal();
+  }
+  void readLocal() async {
+    prefs = await SharedPreferences.getInstance();
+    name = prefs.getString('name') ?? '';
+    setState(() {});
+  }
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -15,8 +28,11 @@ class HomeState extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(
-              'Home Screen',
-              style: Theme.of(context).textTheme.display1,
+              'Hello ' + name.split(' ')[0] + '!',
+              style: new TextStyle(
+                color: Colors.black,
+                fontSize: 30,
+              ),
             ),
           ],
         ),
