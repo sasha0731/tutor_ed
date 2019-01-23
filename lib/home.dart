@@ -13,9 +13,9 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    readLocal();
+    _readLocal();
   }
-  void readLocal() async {
+  void _readLocal() async {
     prefs = await SharedPreferences.getInstance();
     name = prefs.getString('name') ?? '';
     setState(() {});

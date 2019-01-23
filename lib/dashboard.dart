@@ -5,16 +5,13 @@ import 'home.dart';
 import 'chat.dart';
 
 class Dashboard extends StatefulWidget {
-  final String userId;
-  Dashboard({Key key, @required this.userId}) : super(key: key);
+  static String userID;
   @override
-  DashboardState createState() => new DashboardState(userId: userId);
+  DashboardState createState() => new DashboardState();
 }
 
 class DashboardState extends State<Dashboard> {
-  DashboardState({Key key, @required this.userId});
   Authentication auth = new Authentication();
-  final String userId;
   PageController _pageController;
   int _page = 1;
 

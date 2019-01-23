@@ -1,9 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
 import 'login.dart';
@@ -25,10 +25,8 @@ class Authentication {
 
     isLoggedIn = await googleSignIn.isSignedIn();
     if (isLoggedIn) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Dashboard(userId: prefs.getString('id'))),
-      );
+      Dashboard.userID = prefs.getString('id');
+      Navigator.of(context).pushReplacementNamed('/dashboard');
     }
     isLoading.value = false;
   }
@@ -48,7 +46,7 @@ class Authentication {
           idToken: authentication.idToken,
           accessToken: authentication.accessToken
       ).catchError((onError) {
-        print("error $onError");
+        print("Error $onError");
       });
       if (user != null) {
         final QuerySnapshot result =
@@ -76,24 +74,15 @@ class Authentication {
           await prefs.setString('name', documents[0]['name']);
           await prefs.setString('photoUrl', documents[0]['photoUrl']);
         }
-        Fluttertoast.showToast(msg: "Sign in success");
         isLoading.value = false;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => Dashboard(userId: prefs.getString('id'))),
-        );
+        Dashboard.userID = prefs.getString('id');
+        Navigator.of(context).pushReplacementNamed('/dashboard');
       } else {
-        Fluttertoast.showToast(msg: "Sign in fail");
         isLoading.value = false;
       }
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => new Dashboard(userId: prefs.getString('id'))),
-      );
+      Dashboard.userID = prefs.getString('id');
+      Navigator.of(context).pushReplacementNamed('/dashboard');
     } else {
-      Fluttertoast.showToast(msg: "Sign in fail");
       isLoading.value = false;
     }
   }
@@ -103,8 +92,7 @@ class Authentication {
     await FirebaseAuth.instance.signOut();
     await googleSignIn.disconnect();
     await googleSignIn.signOut();
-    Navigator.of(context)
-        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Login()), (Route<dynamic> route) => false);
+    Navigator.of(context).pushReplacementNamed('/');
     isLoading.value = false;
   }
 

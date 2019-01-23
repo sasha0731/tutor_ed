@@ -1,6 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'authentication.dart';
@@ -21,7 +23,11 @@ class LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
+    _initFirestore();
     auth.isSignedIn(context);
+  }
+  void _initFirestore() async {
+    await Firestore.instance.settings(timestampsInSnapshotsEnabled: true);
   }
   @override
   Widget build(BuildContext context) {

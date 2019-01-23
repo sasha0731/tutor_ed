@@ -11,17 +11,16 @@ class Profile extends StatefulWidget {
 class ProfileState extends State<Profile> {
   SharedPreferences prefs;
   String name = '';
-  String photo = '';
+  String photoUrl = '';
   @override
   void initState() {
     super.initState();
-    readLocal();
+    _readLocal();
   }
-  void readLocal() async {
+  void _readLocal() async {
     prefs = await SharedPreferences.getInstance();
     name = prefs.getString('name') ?? '';
-    photo = prefs.getString('photoUrl') ?? '';
-
+    photoUrl = prefs.getString('photoUrl') ?? '';
     setState(() {});
   }
 
@@ -29,12 +28,22 @@ class ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return new Scaffold(
       body: new Stack(
-        children: <Widget>[
+        children: <Widget>[photoUrl != '' ?
           Container(
-            alignment: Alignment(0.0, -0.9),
+            alignment: Alignment(0.0,-0.9),
             child: Material(
               child: CachedNetworkImage(
-                imageUrl: photo,
+                placeholder: Container(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.0,
+                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
+                  ),
+                  width: 90.0,
+                  height: 90.0,
+                  padding: EdgeInsets.all(20.0),
+                ),
+//                errorWidget: new Icon(Icons.error),
+                imageUrl: prefs.getString('photoUrl'),
                 width: 90.0,
                 height: 90.0,
                 fit: BoxFit.cover,
@@ -42,7 +51,7 @@ class ProfileState extends State<Profile> {
               borderRadius: BorderRadius.all(Radius.circular(45.0)),
               clipBehavior: Clip.hardEdge,
             ),
-          ),
+          ) : Container(),
           Container(
             alignment: Alignment(0.0, -0.3),
             child: Text(

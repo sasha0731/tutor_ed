@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dashboard.dart';
 import 'login.dart';
 
 void main() => runApp(App());
@@ -15,7 +16,12 @@ class App extends StatelessWidget {
           accentColor: const Color(0xFFFFAD32),
           fontFamily: 'Roboto'
       ),
-      home: Login(),
+      initialRoute: "/",
+      routes: {
+        "/": (_) => new Login(),
+        "/dashboard": (_) => new Dashboard(),
+      },
+//      home: Login(),
     );
   }
 }

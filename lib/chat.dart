@@ -15,9 +15,9 @@ class ChatState extends State<Chat> {
   @override
   void initState() {
     super.initState();
-    readLocal();
+    _readLocal();
   }
-  void readLocal() async {
+  void _readLocal() async {
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id') ?? '';
 
