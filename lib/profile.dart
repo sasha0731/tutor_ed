@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dashboard.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class ProfileState extends State<Profile> {
   SharedPreferences prefs;
   String name = '';
   String photoUrl = '';
+  String email = '';
   @override
   void initState() {
     super.initState();
@@ -21,6 +23,8 @@ class ProfileState extends State<Profile> {
     prefs = await SharedPreferences.getInstance();
     name = prefs.getString('name') ?? '';
     photoUrl = prefs.getString('photoUrl') ?? '';
+    email = prefs.getString('email') ?? '';
+    Dashboard.title = email.split("@")[0];
     setState(() {});
   }
 
@@ -36,13 +40,12 @@ class ProfileState extends State<Profile> {
                 placeholder: Container(
                   child: CircularProgressIndicator(
                     strokeWidth: 2.0,
-                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
+                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).errorColor),
                   ),
                   width: 90.0,
                   height: 90.0,
                   padding: EdgeInsets.all(20.0),
                 ),
-//                errorWidget: new Icon(Icons.error),
                 imageUrl: prefs.getString('photoUrl'),
                 width: 90.0,
                 height: 90.0,

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dashboard.dart';
 
 class Chat extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class Chat extends StatefulWidget {
 class ChatState extends State<Chat> {
   SharedPreferences prefs;
   String id = '';
+  int role = -1;
   @override
   void initState() {
     super.initState();
@@ -20,13 +22,12 @@ class ChatState extends State<Chat> {
   void _readLocal() async {
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id') ?? '';
-
+    role = prefs.getInt('role') ?? -1;
     setState(() {});
   }
 
-
-  Widget buildUser(BuildContext context, DocumentSnapshot document) {
-    if (document['id'] == id) {
+  Widget buildUser(BuildContext context, DocumentSnapshot document, int r) {
+    if (document['id'] == id || document['role'] == r || r == -1) {
       return Container();
     } else {
       return Container(
@@ -38,7 +39,7 @@ class ChatState extends State<Chat> {
                   placeholder: Container(
                     child: CircularProgressIndicator(
                       strokeWidth: 1.0,
-                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
+                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).errorColor),
                     ),
                     width: 50.0,
                     height: 50.0,
@@ -74,7 +75,7 @@ class ChatState extends State<Chat> {
           onPressed: () {
             print('Email -> ' + document['email'].toString());
           },
-          color: Color(0x12632256),
+          color: Theme.of(context).primaryColorLight,
           padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
@@ -83,35 +84,88 @@ class ChatState extends State<Chat> {
     }
   }
 
+  Widget buildChatList(int r) {
+    return Container(
+      child: StreamBuilder(
+        stream: Firestore.instance.collection('users').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).errorColor),
+              ),
+            );
+          } else {
+            return ListView.builder(
+              padding: EdgeInsets.all(10.0),
+              itemBuilder: (context, index) => buildUser(context, snapshot.data.documents[index], r),
+              itemCount: snapshot.data.documents.length,
+            );
+          }
+        },
+      ),
+    );
+  }
+
+
+
+  int value = 0;
+  final Map<int, Widget> options = const <int, Widget>{
+    0: Text('Students'),
+    1: Text('Tutors'),
+  };
+
+  Widget buildSegmentedControl() {
+    if (role == 0) {
+      Dashboard.title = 'Students';
+      return buildChatList(role);
+    } else if (role == 1) {
+      Dashboard.title = 'Tutors';
+    } else if (role == 2) {
+      return Column(
+        children: <Widget>[
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+          ),
+          SizedBox (
+            width: 500,
+            child: CupertinoSegmentedControl<int>(
+              borderColor: Theme.of(context).accentColor,
+              selectedColor: Theme.of(context).accentColor,
+              pressedColor: Theme.of(context).unselectedWidgetColor,
+              children: options,
+              onValueChanged: (int val) {
+                setState(() {
+                  value = val;
+                });
+              },
+              groupValue: value,
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+          ),
+          Expanded (
+            child: Container (
+              child: buildChatList(1-value),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      body: new Container(
-        child: new Stack(
-          children: <Widget>[
-            Container(
-              child: StreamBuilder(
-                stream: Firestore.instance.collection('users').snapshots(),
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).accentColor),
-                      ),
-                    );
-                  } else {
-                    return ListView.builder(
-                      padding: EdgeInsets.all(10.0),
-                      itemBuilder: (context, index) => buildUser(context, snapshot.data.documents[index]),
-                      itemCount: snapshot.data.documents.length,
-                    );
-                  }
-                },
-              ),
-            ),
-          ],
-        ),
+      body: new Stack(
+        children: <Widget>[
+          Container(
+            child: buildSegmentedControl(),
+          ),
+        ],
       ),
     );
   }

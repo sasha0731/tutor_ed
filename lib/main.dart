@@ -11,17 +11,24 @@ class App extends StatelessWidget {
       title: 'TutorED',
       debugShowCheckedModeBanner: false,
       theme: new ThemeData(
-          primaryColor: const Color(0xFF02BB9F),
-          primaryColorDark: const Color(0xFF167F67),
-          accentColor: const Color(0xFFFFAD32),
-          fontFamily: 'Roboto'
+        primaryColor: const Color(0xFF02BB9F),
+        primaryColorLight: const Color(0xFFDCF3EF),
+        primaryColorDark: const Color(0xFF167F67),
+        secondaryHeaderColor: const Color(0xFF4302BB),
+        buttonColor: const Color(0xFFCC6030),
+        errorColor: const Color(0xFFFFAD32),
+        accentColor: const Color(0xFF4E488B),
+        unselectedWidgetColor: const Color(0xFFEAEBF3),
+
+
+        fontFamily: 'Roboto'
       ),
-      initialRoute: "/",
+      initialRoute: '/',
       routes: {
-        "/": (_) => new Login(),
-        "/dashboard": (_) => new Dashboard(),
+        '/': (_) => new Login(),
+        '/dashboard': (_) => new Dashboard(),
+        '/user': (_) => new User(),
       },
-//      home: Login(),
     );
   }
 }

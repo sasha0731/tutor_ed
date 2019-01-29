@@ -2,7 +2,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
@@ -10,35 +9,41 @@ import 'login.dart';
 import 'dart:async';
 
 class Authentication {
+
+  static final Authentication _authentication = new Authentication._internal();
+
+  factory Authentication() {
+    return _authentication;
+  }
+  Authentication._internal();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = new GoogleSignIn();
   SharedPreferences prefs;
   bool isLoggedIn = false;
   final isLoading = ValueNotifier(false);
   FirebaseUser currentUser;
-  bool getLoading() {
-    return isLoading.value;
-  }
-  void isSignedIn(BuildContext context) async {
+
+  Future<Null> isSignedIn(BuildContext context) async {
     isLoading.value = true;
     prefs = await SharedPreferences.getInstance();
-
     isLoggedIn = await googleSignIn.isSignedIn();
-    if (isLoggedIn) {
-      Dashboard.userID = prefs.getString('id');
-      Navigator.of(context).pushReplacementNamed('/dashboard');
-    }
     isLoading.value = false;
+    if (isLoggedIn) {
+      if (prefs.getInt('role') == null) {
+        Navigator.of(context).pushReplacementNamed('/user');
+      } else {
+        Navigator.of(context).pushReplacementNamed('/dashboard');
+      }
+    }
   }
 
-  Future<FirebaseUser> signIn(BuildContext context) async {
-    prefs = await SharedPreferences.getInstance();
+  Future<Null> signIn(BuildContext context) async {
     isLoading.value = true;
+    prefs = await SharedPreferences.getInstance();
     GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn()
         .catchError((onError) {
-      print("Error $onError");
+      print('Error $onError');
     });
-
     if (googleSignInAccount != null) {
       final GoogleSignInAuthentication authentication = await googleSignInAccount
           .authentication;
@@ -46,9 +51,10 @@ class Authentication {
           idToken: authentication.idToken,
           accessToken: authentication.accessToken
       ).catchError((onError) {
-        print("Error $onError");
+        print('Error $onError');
       });
-      if (user != null) {
+      isLoggedIn = await googleSignIn.isSignedIn();
+      if (user != null && isLoggedIn) {
         final QuerySnapshot result =
         await Firestore.instance.collection('users').where(
             'id', isEqualTo: user.uid).getDocuments();
@@ -58,33 +64,36 @@ class Authentication {
               .collection('users')
               .document(user.uid)
               .setData({
+            'id': user.uid,
             'name': user.displayName,
             'email': user.email,
             'photoUrl': user.photoUrl,
-            'id': user.uid
           });
-          currentUser = user;
           await prefs.setString('id', user.uid);
           await prefs.setString('email', user.email);
           await prefs.setString('name', user.displayName);
           await prefs.setString('photoUrl', user.photoUrl);
+
+          currentUser = user;
+          isLoading.value = false;
+          Navigator.of(context).pushReplacementNamed('/user');
         } else {
           await prefs.setString('id', documents[0]['id']);
           await prefs.setString('email', documents[0]['email']);
           await prefs.setString('name', documents[0]['name']);
           await prefs.setString('photoUrl', documents[0]['photoUrl']);
+          if (prefs.getInt('role') == null) {
+            isLoading.value = false;
+            Navigator.of(context).pushReplacementNamed('/user');
+          } else {
+            await prefs.setInt('role', documents[0]['role']);
+            isLoading.value = false;
+            Navigator.of(context).pushReplacementNamed('/dashboard');
+          }
         }
-        isLoading.value = false;
-        Dashboard.userID = prefs.getString('id');
-        Navigator.of(context).pushReplacementNamed('/dashboard');
-      } else {
-        isLoading.value = false;
       }
-      Dashboard.userID = prefs.getString('id');
-      Navigator.of(context).pushReplacementNamed('/dashboard');
-    } else {
-      isLoading.value = false;
     }
+    isLoading.value = false;
   }
 
   Future<Null> signOut(BuildContext context) async {
@@ -92,8 +101,9 @@ class Authentication {
     await FirebaseAuth.instance.signOut();
     await googleSignIn.disconnect();
     await googleSignIn.signOut();
-    Navigator.of(context).pushReplacementNamed('/');
+    isLoggedIn = false;
     isLoading.value = false;
+    Navigator.of(context).pushReplacementNamed('/');
   }
 
   Future<FirebaseUser> getUser() async {

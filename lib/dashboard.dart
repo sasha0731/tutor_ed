@@ -5,16 +5,15 @@ import 'home.dart';
 import 'chat.dart';
 
 class Dashboard extends StatefulWidget {
-  static String userID;
+  static String title = 'TutorED';
   @override
   DashboardState createState() => new DashboardState();
 }
 
 class DashboardState extends State<Dashboard> {
-  Authentication auth = new Authentication();
+  var auth = new Authentication();
   PageController _pageController;
   int _page = 1;
-
   @override
   void initState() {
     super.initState();
@@ -46,16 +45,15 @@ class DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
     return new Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50),
         child: AppBar(
           title: new Text (
-            'TutorED',
+            Dashboard.title,
             style: new TextStyle(
               color: const Color(0xFFFFFFFF),
-              fontSize: 0.04*height,
+              fontSize: 28.0,
             ),
           ),
           actions: <Widget>[
@@ -115,10 +113,9 @@ class DashboardState extends State<Dashboard> {
                 color: const Color(0xFFFFFFFF),
               ),
               title: new Text(
-                "Chat",
+                'Chat',
                 style: new TextStyle(
                   color: const Color(0xFFFFFFFF),
-                  fontSize: 0.02*height,
                 ),
               )),
             new BottomNavigationBarItem(
@@ -127,10 +124,9 @@ class DashboardState extends State<Dashboard> {
                 color: const Color(0xFFFFFFFF),
               ),
               title: new Text(
-                "Home",
+                'Home',
                 style: new TextStyle(
                   color: const Color(0xFFFFFFFF),
-                  fontSize: 0.02*height,
                 ),
               )),
             new BottomNavigationBarItem(
@@ -139,10 +135,9 @@ class DashboardState extends State<Dashboard> {
                 color: const Color(0xFFFFFFFF),
               ),
               title: new Text(
-                "Profile",
+                'Profile',
                 style: new TextStyle(
                   color: const Color(0xFFFFFFFF),
-                  fontSize: 0.02*height,
                 ),
               ))
           ],
