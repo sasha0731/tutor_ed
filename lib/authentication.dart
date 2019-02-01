@@ -4,8 +4,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'dashboard.dart';
-import 'login.dart';
 import 'dart:async';
 
 class Authentication {
@@ -82,7 +80,7 @@ class Authentication {
           await prefs.setString('email', documents[0]['email']);
           await prefs.setString('name', documents[0]['name']);
           await prefs.setString('photoUrl', documents[0]['photoUrl']);
-          if (prefs.getInt('role') == null) {
+          if (documents[0]['role'] == null) {
             isLoading.value = false;
             Navigator.of(context).pushReplacementNamed('/user');
           } else {

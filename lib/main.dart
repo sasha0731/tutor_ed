@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
 import 'login.dart';
+import 'form.dart';
 
 void main() => runApp(App());
 
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
         '/': (_) => new Login(),
         '/dashboard': (_) => new Dashboard(),
         '/user': (_) => new User(),
+        '/form': (_) => new TutorForm(),
       },
     );
   }

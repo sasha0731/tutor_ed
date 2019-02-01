@@ -121,6 +121,7 @@ class ChatState extends State<Chat> {
       return buildChatList(role);
     } else if (role == 1) {
       Dashboard.title = 'Tutors';
+      return buildChatList(role);
     } else if (role == 2) {
       return Column(
         children: <Widget>[

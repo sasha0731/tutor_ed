@@ -17,7 +17,9 @@ class DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    _pageController = new PageController();
+    _pageController = new PageController(
+      initialPage: 1,
+    );
   }
   @override
   void dispose() {
@@ -65,24 +67,24 @@ class DashboardState extends State<Dashboard> {
                   const Choice(title: 'Log out', icon: Icons.exit_to_app),
                 ].map((Choice choice) {
                   return PopupMenuItem<Choice>(
-                      value: choice,
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            choice.icon,
+                    value: choice,
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          choice.icon,
+                          color: Colors.black,
+                        ),
+                        Container(
+                          width: 10.0,
+                        ),
+                        Text(
+                          choice.title,
+                          style: TextStyle(
                             color: Colors.black,
                           ),
-                          Container(
-                            width: 10.0,
-                          ),
-                          Text(
-                            choice.title,
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ));
+                        ),
+                      ],
+                    ));
                 }).toList();
               },
             ),
@@ -117,7 +119,8 @@ class DashboardState extends State<Dashboard> {
                 style: new TextStyle(
                   color: const Color(0xFFFFFFFF),
                 ),
-              )),
+              ),
+            ),
             new BottomNavigationBarItem(
               icon: new Icon(
                 Icons.home,
@@ -128,7 +131,8 @@ class DashboardState extends State<Dashboard> {
                 style: new TextStyle(
                   color: const Color(0xFFFFFFFF),
                 ),
-              )),
+              ),
+            ),
             new BottomNavigationBarItem(
               icon: new Icon(
                 Icons.person,
@@ -139,7 +143,8 @@ class DashboardState extends State<Dashboard> {
                 style: new TextStyle(
                   color: const Color(0xFFFFFFFF),
                 ),
-              ))
+              )
+            ),
           ],
         ),
       ),
