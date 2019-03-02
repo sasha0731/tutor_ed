@@ -20,6 +20,9 @@ class App extends StatelessWidget {
         errorColor: const Color(0xFFFFAD32),
         accentColor: const Color(0xFF4E488B),
         unselectedWidgetColor: const Color(0xFFEAEBF3),
+        textSelectionColor: const Color(0xFF382618),
+        hintColor: const Color(0xFFAEAEAE),
+
 
 
         fontFamily: 'Roboto'

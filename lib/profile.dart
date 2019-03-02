@@ -60,7 +60,7 @@ class ProfileState extends State<Profile> {
             child: Text(
               name,
               style: new TextStyle(
-                color: Colors.black,
+                color: Theme.of(context).textSelectionColor,
                 fontSize: 30,
               ),
             ),

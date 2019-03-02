@@ -32,7 +32,7 @@ class HomeState extends State<Home> {
             new Text(
               'Hello ' + name.split(' ')[0] + '!',
               style: new TextStyle(
-                color: Colors.black,
+                color: Theme.of(context).textSelectionColor,
                 fontSize: 30,
               ),
             ),

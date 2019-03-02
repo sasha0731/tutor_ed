@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:tutor_ed/conversation.dart';
 import 'dashboard.dart';
 
 class Chat extends StatefulWidget {
@@ -60,7 +61,7 @@ class ChatState extends State<Chat> {
                       Container(
                         child: Text(
                           'Name: ${document['name']}',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Theme.of(context).textSelectionColor),
                         ),
                         alignment: Alignment.centerLeft,
                         margin: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 5.0),
@@ -73,7 +74,7 @@ class ChatState extends State<Chat> {
             ],
           ),
           onPressed: () {
-            print('Email -> ' + document['email'].toString());
+            navigateToConversation(context, document);
           },
           color: Theme.of(context).primaryColorLight,
           padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
@@ -83,7 +84,9 @@ class ChatState extends State<Chat> {
       );
     }
   }
-
+  Future navigateToConversation(context, DocumentSnapshot document) async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Conversation(document: document,)));
+  }
   Widget buildChatList(int r) {
     return Container(
       child: StreamBuilder(

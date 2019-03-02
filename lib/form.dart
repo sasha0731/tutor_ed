@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class TutorForm extends StatefulWidget {
+  final DocumentSnapshot document;
+  TutorForm({Key key, this.document}) : super(key: key);
   @override
   TutorFormState createState() => new TutorFormState();
 }
@@ -12,8 +15,6 @@ class TutorFormState extends State<TutorForm> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   FormInformation info = new FormInformation();
-
-  String student = 'Sahil Shah';
 
   List<String> _hours = <String>['', '0.5', '1', '1.5', '2', '2.5', '3'];
   String _currentTime = '';
@@ -101,7 +102,7 @@ class TutorFormState extends State<TutorForm> {
               child:TextFormField(
                 decoration: new InputDecoration(
                   icon: const Icon(Icons.people),
-                  hintText: student,
+                  hintText: widget.document['name'],
                   labelText: 'Students Name',
                 ),
                 validator: (val) => val.isEmpty ? 'Please enter the student\'s name' : null,
@@ -181,7 +182,7 @@ class TutorFormState extends State<TutorForm> {
               ),
             ),
             new Container(
-              padding: const EdgeInsets.only(left: 40.0, top: 20.0),
+              padding: const EdgeInsets.only(top: 20.0),
               child: new RaisedButton(
                 child: const Text('Submit'),
                 color: Theme.of(context).primaryColorDark,
