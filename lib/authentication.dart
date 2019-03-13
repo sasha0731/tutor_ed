@@ -80,6 +80,8 @@ class Authentication {
           await prefs.setString('email', documents[0]['email']);
           await prefs.setString('name', documents[0]['name']);
           await prefs.setString('photoUrl', documents[0]['photoUrl']);
+          await prefs.setString('aboutMe', documents[0]['aboutMe']);
+          await prefs.setInt('grade', documents[0]['grade']);
           if (documents[0]['role'] == null) {
             isLoading.value = false;
             Navigator.of(context).pushReplacementNamed('/user');
