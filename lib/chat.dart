@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tutor_ed/conversation.dart';
 import 'dashboard.dart';
+import 'profile.dart';
 
 class Chat extends StatefulWidget {
   @override
@@ -74,7 +75,7 @@ class ChatState extends State<Chat> {
             ],
           ),
           onPressed: () {
-            navigateToConversation(context, document);
+            navigateToProfile(context, document);
           },
           color: Theme.of(context).primaryColorLight,
           padding: EdgeInsets.fromLTRB(25.0, 10.0, 25.0, 10.0),
@@ -84,8 +85,8 @@ class ChatState extends State<Chat> {
       );
     }
   }
-  Future navigateToConversation(context, DocumentSnapshot document) async {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Conversation(document: document,)));
+  Future navigateToProfile(context, DocumentSnapshot document) async {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Profile(document: document,)));
   }
   Widget buildChatList(int r) {
     return Container(
@@ -134,9 +135,10 @@ class ChatState extends State<Chat> {
           SizedBox (
             width: 500,
             child: CupertinoSegmentedControl<int>(
-              borderColor: Theme.of(context).accentColor,
-              selectedColor: Theme.of(context).accentColor,
-              pressedColor: Theme.of(context).unselectedWidgetColor,
+              borderColor: Theme.of(context).hintColor,
+              selectedColor: Theme.of(context).primaryColorDark,
+              pressedColor: Theme.of(context).primaryColorLight,
+              unselectedColor: Theme.of(context).accentColor,
               children: options,
               onValueChanged: (int val) {
                 setState(() {
@@ -163,6 +165,7 @@ class ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
+    Dashboard.title = 'TutorED';
     return new Scaffold(
       body: new Stack(
         children: <Widget>[

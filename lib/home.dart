@@ -24,21 +24,29 @@ class HomeState extends State<Home> {
   }
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-              'Hello ' + name.split(' ')[0] + '!',
-              style: new TextStyle(
-                color: Theme.of(context).textSelectionColor,
-                fontSize: 30,
+    return new Container (
+      decoration: BoxDecoration(color: Colors.transparent),
+//      padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+      child: Align (
+        child: Container (
+          alignment: Alignment(0,0),
+          decoration: new BoxDecoration(color: Colors.white),
+          child: ListView(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+            children: <Widget>[
+              Center (
+                child: Text(
+                  'Hello ' + name.split(' ')[0] + '!',
+                  style: new TextStyle(
+                    color: Theme.of(context).textSelectionColor,
+                    fontSize: 30,
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        )
+      )
     );
   }
 }

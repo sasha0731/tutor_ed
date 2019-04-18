@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'authentication.dart';
 import 'profile.dart';
 import 'home.dart';
 import 'chat.dart';
+import 'settings.dart';
 
 class Dashboard extends StatefulWidget {
   static String title = 'TutorED';
@@ -40,113 +42,123 @@ class DashboardState extends State<Dashboard> {
     if (item.title == 'Log out') {
       auth.signOut(context);
     } else if (item.title == 'Settings') {
-      onPageChanged(2);
-      navigationTapped(2);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50),
-        child: AppBar(
-          title: new Text (
-            Dashboard.title,
-            style: new TextStyle(
-              color: const Color(0xFFFFFFFF),
-              fontSize: 28.0,
+    return new Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+      ),
+      child: Scaffold (
+        backgroundColor: Colors.transparent,
+        appBar: PreferredSize (
+          preferredSize: Size.fromHeight(50),
+          child: AppBar (
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            title: new Text (
+              Dashboard.title,
+              style: new TextStyle(
+                color: Colors.white,
+                fontSize: 30.0,
+              ),
             ),
-          ),
-          actions: <Widget>[
-            PopupMenuButton<Choice>(
-              onSelected: onItemMenuPress,
-              itemBuilder: (BuildContext context) {
-                return const <Choice>[
-                  const Choice(title: 'Settings', icon: Icons.settings),
-                  const Choice(title: 'Log out', icon: Icons.exit_to_app),
-                ].map((Choice choice) {
-                  return PopupMenuItem<Choice>(
-                    value: choice,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          choice.icon,
-                          color: Colors.black,
-                        ),
-                        Container(
-                          width: 10.0,
-                        ),
-                        Text(
-                          choice.title,
-                          style: TextStyle(
+            actions: <Widget>[
+              PopupMenuButton<Choice>(
+                icon: Icon(Icons.menu, color: Colors.white),
+                onSelected: onItemMenuPress,
+                itemBuilder: (BuildContext context) {
+                  return const <Choice>[
+                    const Choice(title: 'Settings', icon: Icons.settings),
+                    const Choice(title: 'Log out', icon: Icons.exit_to_app),
+                  ].map((Choice choice) {
+                    return PopupMenuItem<Choice>(
+                      value: choice,
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            choice.icon,
                             color: Colors.black,
                           ),
-                        ),
-                      ],
-                    ));
-                }).toList();
-              },
-            ),
+                          Container(
+                            width: 10.0,
+                          ),
+                          Text(
+                            choice.title,
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ));
+                  }).toList();
+                },
+              ),
+            ],
+          ),
+        ),
+        body: new PageView(
+          children: [
+            new Chat(),
+            new Home(),
+            new Profile(document: null),
           ],
+          onPageChanged: onPageChanged,
+          physics: NeverScrollableScrollPhysics(),
+          controller: _pageController,
         ),
-      ),
-      body: new PageView(
-        children: [
-          new Chat(),
-          new Home(),
-          new Profile(),
-        ],
-        onPageChanged: onPageChanged,
-        physics: NeverScrollableScrollPhysics(),
-        controller: _pageController,
-      ),
-      bottomNavigationBar: new Theme(
-        data: Theme.of(context).copyWith(
-          canvasColor: Theme.of(context).primaryColor,
-        ),
-        child: new BottomNavigationBar(
-          onTap: navigationTapped,
-          currentIndex: _page,
-          items: [
-            new BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.chat_bubble,
-                color: const Color(0xFFFFFFFF),
-              ),
-              title: new Text(
-                'Chat',
-                style: new TextStyle(
-                  color: const Color(0xFFFFFFFF),
+
+        bottomNavigationBar: new Theme(
+          data: Theme.of(context).copyWith(
+            bottomAppBarColor: Colors.transparent,
+            canvasColor: Theme.of(context).primaryColor,
+          ),
+          child: new BottomNavigationBar(
+            onTap: navigationTapped,
+            currentIndex: _page,
+            items: [
+              new BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.chat_bubble,
+                  color: Theme.of(context).accentColor,
+                ),
+                title: new Text(
+                  'Chat',
+                  style: new TextStyle(
+                    color: Theme.of(context).accentColor,
+                  ),
                 ),
               ),
-            ),
-            new BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.home,
-                color: const Color(0xFFFFFFFF),
-              ),
-              title: new Text(
-                'Home',
-                style: new TextStyle(
-                  color: const Color(0xFFFFFFFF),
+              new BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.home,
+                  color: Theme.of(context).accentColor,
+                ),
+                title: new Text(
+                  'Home',
+                  style: new TextStyle(
+                    color: Theme.of(context).accentColor,
+                  ),
                 ),
               ),
-            ),
-            new BottomNavigationBarItem(
-              icon: new Icon(
-                Icons.person,
-                color: const Color(0xFFFFFFFF),
-              ),
-              title: new Text(
-                'Profile',
-                style: new TextStyle(
-                  color: const Color(0xFFFFFFFF),
+              new BottomNavigationBarItem(
+                icon: new Icon(
+                  Icons.person,
+                  color: Theme.of(context).accentColor,
                 ),
-              )
-            ),
-          ],
-        ),
+                title: new Text(
+                  'Profile',
+                  style: new TextStyle(
+                    color: Theme.of(context).accentColor,
+                  ),
+                )
+              ),
+            ],
+          ),
+        )
       ),
     );
   }

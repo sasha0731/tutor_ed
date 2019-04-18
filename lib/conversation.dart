@@ -37,7 +37,7 @@ class ConversationState extends State<Conversation> {
             widget.document['name'],
             style: new TextStyle(
               color: const Color(0xFFFFFFFF),
-              fontSize: 28.0,
+              fontSize: 30.0,
             ),
           ),
           backgroundColor: Theme.of(context).primaryColor,

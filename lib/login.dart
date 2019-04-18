@@ -1,3 +1,4 @@
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -35,46 +36,82 @@ class LoginState extends State<Login> {
     return new Scaffold(
       body: Stack (
         children: <Widget>[
-          Container (
-            alignment: Alignment(0.0, -0.8),
-            child: Text (
-              'TutorED',
-              style: new TextStyle(
-                color: Theme.of(context).secondaryHeaderColor,
-                fontSize: 48.0,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          Center(
-            child: FlatButton(
-              onPressed: () => auth.signIn(context),
-              child: Text(
-                'SIGN IN WITH GOOGLE',
-                style: TextStyle(fontSize: 14.0),
-              ),
-              color: Color(0xffdd4b39),
-              highlightColor: Color(0xffff7f7f),
-              splashColor: Colors.transparent,
-              textColor: Colors.white,
-              padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0)
-            ),
-          ),
-          ValueListenableBuilder<bool>(
-            valueListenable: auth.isLoading,
-            builder: (context, value, child) {
-              return Container (
-                child: auth.isLoading.value
-                    ? Container(
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).errorColor),
-                    ),
+          Center (
+            child: Stack (
+              children: <Widget> [
+                Container (
+                  alignment: new Alignment(0,-0.5),
+                  child: Image.asset(
+                    'images/lightbulb.jpg',
+                    height: 300.0,
+                    width: 300.0,
                   ),
-                  color: Colors.white.withOpacity(0.8),
-                ): Container(),
-              );
-            },
+                ),
+                Container (
+                  alignment: new Alignment(0,0),
+                  child: Text (
+                    'TutorED',
+                    style: new TextStyle(
+                      color: Colors.black,
+                      fontSize: 50.0,
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Center (
+            child: Column (
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Log in in with your email.',
+                  style: new TextStyle(
+                    fontSize: 15.0,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 5.0),
+                ),
+                RawMaterialButton (
+                  elevation: 2.5,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container (
+                        padding: EdgeInsets.fromLTRB(7, 0, 20, 0),
+                        child: Image.asset(
+                          'images/google.jpg',
+                          height: 30.0,
+                          width: 30.0,
+                        ),
+                      ),
+                      Container (
+                        padding: EdgeInsets.fromLTRB(0, 0, 80, 0),
+                        child: Text(
+                          'Sign in',
+                          style: new TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  onPressed: () => auth.signIn(context),
+                  fillColor: Colors.white,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20.0),
+                )
+              ],
+            ),
           ),
         ],
       ),
@@ -92,6 +129,7 @@ class UserState extends State<User> {
 
   SharedPreferences prefs;
   String id = '';
+  String name = '';
 
   @override
   void initState() {
@@ -102,9 +140,10 @@ class UserState extends State<User> {
   void _readLocal() async {
     prefs = await SharedPreferences.getInstance();
     id = prefs.getString('id') ?? '';
+    name = prefs.getString('name') ?? '';
   }
 
-  void addRole(int role) {
+  void addData(int role, String grade) {
     if (role != -1) {
       setState(() {
         auth.isLoading.value = true;
@@ -112,8 +151,9 @@ class UserState extends State<User> {
       Firestore.instance
           .collection('users')
           .document(id)
-          .updateData({'role': role,}).then((data) async {
+          .updateData({'role': role, 'grade': int.parse(_gradeController.text)}).then((data) async {
         await prefs.setInt('role', role);
+        await prefs.setInt('grade', int.parse(grade));
         setState(() {
           auth.isLoading.value = false;
         });
@@ -126,6 +166,7 @@ class UserState extends State<User> {
     }
   }
   int roleValue = -1;
+  final TextEditingController _gradeController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -134,9 +175,9 @@ class UserState extends State<User> {
           Container (
             alignment: Alignment(0.0, -0.8),
             child: Text (
-              'Welcome!',
+              'Welcome ' + name.split(' ')[0] + '!',
               style: new TextStyle(
-                color: Theme.of(context).primaryColorDark,
+                color: Theme.of(context).primaryColor,
                 fontSize: 42.0,
               ),
               textAlign: TextAlign.center,
@@ -149,7 +190,7 @@ class UserState extends State<User> {
               Text (
                 'I am a...',
                 style: new TextStyle(
-                  color: Theme.of(context).secondaryHeaderColor,
+//                  color: Theme.of(context).primaryColor,
                   fontSize: 24.0,
                 ),
                 textAlign: TextAlign.center,
@@ -158,11 +199,12 @@ class UserState extends State<User> {
                 title: new Text (
                   'Student',
                   style: new TextStyle(
-                    color: Theme.of(context).secondaryHeaderColor,
+                    color: Theme.of(context).textSelectionColor,
                   ),
                 ),
                 value: 0,
                 groupValue: roleValue,
+                activeColor: Theme.of(context).textSelectionColor,
                 onChanged: (int value) {
                   setState(() => roleValue = value);
                 }),
@@ -170,11 +212,12 @@ class UserState extends State<User> {
                   title: new Text (
                     'Tutor',
                     style: new TextStyle(
-                      color: Theme.of(context).secondaryHeaderColor,
+                      color: Theme.of(context).textSelectionColor,
                     ),
                   ),
                 value: 1,
                 groupValue: roleValue,
+                activeColor: Theme.of(context).textSelectionColor,
                 onChanged: (int value) {
                   setState(() => roleValue = value);
                 }),
@@ -182,22 +225,47 @@ class UserState extends State<User> {
                   title: new Text (
                     'Both',
                     style: new TextStyle(
-                      color: Theme.of(context).secondaryHeaderColor,
+                      color: Theme.of(context).textSelectionColor,
                     ),
                   ),
                 value: 2,
                 groupValue: roleValue,
+                activeColor: Theme.of(context).textSelectionColor,
                 onChanged: (int value) {
                   setState(() => roleValue = value);
               }),
             ],
           ),
           Container (
-            alignment: Alignment(0.0, 0.7),
+            padding: EdgeInsets.fromLTRB(30, 0, 50, 0),
+            alignment: Alignment(0.0, 0.45),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text (
+                  'Grade:  ',
+                  style: new TextStyle(
+                    color: Theme.of(context).textSelectionColor,
+                    fontSize: 24,
+                  ),
+                ),
+                Flexible(
+                  child: TextFormField(
+                    controller: _gradeController,
+                    keyboardType: TextInputType.number,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container (
+            alignment: Alignment(0.0, 0.8),
             child: ButtonTheme(
               minWidth: 150,
               child: RaisedButton(
-                  onPressed: () => addRole(roleValue),
+                  onPressed: () => addData(roleValue, _gradeController.text),
                   child: Text(
                     'Go!',
                     style: TextStyle(
@@ -206,7 +274,7 @@ class UserState extends State<User> {
                   ),
                   color: Theme.of(context).accentColor,
                   splashColor: Colors.transparent,
-                  textColor: Theme.of(context).primaryColorLight,
+                  textColor: Theme.of(context).primaryColor,
                   padding: EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0))
               ),
