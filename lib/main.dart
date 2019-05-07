@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dashboard.dart';
+import 'settings.dart';
 import 'login.dart';
 import 'form.dart';
+
 
 void main() => runApp(App());
 
@@ -12,7 +14,6 @@ class App extends StatelessWidget {
       title: 'TutorED',
       debugShowCheckedModeBanner: false,
       theme: new ThemeData(
-//        primaryColor: const Color(0xFF02BB9F),
         primaryColorLight: const Color(0xFFDCF3EF),
         primaryColorDark: const Color(0xFF167F67),
         primaryColor: const Color(0xFF1853a5),
@@ -32,6 +33,7 @@ class App extends StatelessWidget {
         '/dashboard': (_) => new Dashboard(),
         '/user': (_) => new User(),
         '/form': (_) => new TutorForm(),
+        '/settings': (_) => new Settings(),
       },
     );
   }

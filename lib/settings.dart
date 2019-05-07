@@ -13,6 +13,7 @@ class SettingsState extends State<Settings> {
   final TextEditingController _gradeController = new TextEditingController();
   final TextEditingController _aboutMeController = new TextEditingController();
   SharedPreferences prefs;
+  String name = '';
   String id = '';
   int grade = 0;
   String aboutMe = '';
@@ -24,6 +25,7 @@ class SettingsState extends State<Settings> {
   }
   void _readLocal() async {
     prefs = await SharedPreferences.getInstance();
+    name = prefs.getString('name') ?? '';
     id = prefs.getString('id') ?? '';
     grade = prefs.getInt('grade') ?? 0;
     aboutMe = prefs.getString('aboutMe') ?? '';
@@ -45,6 +47,24 @@ class SettingsState extends State<Settings> {
               fontSize: 30.0,
             ),
           ),
+          actions: <Widget>[
+            IconButton (
+              icon: Icon(Icons.save),
+              tooltip: 'Save',
+              onPressed: () {
+                setState(() {
+                  Firestore.instance
+                      .collection('users')
+                      .document(id)
+                      .updateData({'aboutMe': _aboutMeController.text, 'grade': int.parse(_gradeController.text)}).then((data) async {
+                    await prefs.setString('aboutMe', _aboutMeController.text);
+                    await prefs.setInt('grade', int.parse(_gradeController.text));
+                  });
+                  Navigator.of(context).pushReplacementNamed('/dashboard');
+                });
+              },
+            )
+          ],
           backgroundColor: Theme.of(context).primaryColor,
         ),
       ),
@@ -71,73 +91,66 @@ class SettingsState extends State<Settings> {
               borderRadius: BorderRadius.all(Radius.circular(45.0)),
               clipBehavior: Clip.hardEdge,
             ),
-            padding: EdgeInsets.fromLTRB(0, 15, 0, 20),
+            padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
           ) : Container(),
-//          Container (
-//            child: GridView.count(
-//              crossAxisCount: 2,
-//              childAspectRatio: 1.0,
-//              padding: const EdgeInsets.all(4.0),
-//              mainAxisSpacing: 4.0,
-//              crossAxisSpacing: 4.0,
-//              children: <String>[
-//                'Grade',
-//                grade.toString(),
-//                'About Me',
-//                aboutMe,
-//              ].map((String text) {
-//                return new GridTile(
-//                    child: new Text(text));
-//              }).toList()
-//            ),
-//          ),
+
+          Center (
+            child: Text(
+              name,
+              style: new TextStyle(
+                color: Theme.of(context).textSelectionColor,
+                fontSize: 24,
+              ),
+            ),
+          ),
+
+          Padding (
+            padding: EdgeInsets.fromLTRB(0, 40, 0, 0),
+          ),
+          // grade
+          Container(
+            child: Row (
+              children: <Widget>[
+                Text (
+                  'Grade:   ',
+                  style: new TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox (
+                  width: 30,
+                  child: TextFormField(
+                    controller: _gradeController,
+                    keyboardType: TextInputType.number,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+          ),
+
+          Container(
+            child: Row (
+              children: <Widget>[
+                Text (
+                  'About Me:   ',
+                  style: new TextStyle(
+                    fontSize: 18,
+                  ),
+                ),
+                SizedBox (
+                  width: 250,
+                  child: TextFormField(
+                    controller: _aboutMeController,
+                    maxLines: null,
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 50),
+          ),
         ],
-//            // grade
-//            Container(
-//              child: TextFormField(
-//                controller: _gradeController,
-//                keyboardType: TextInputType.number,
-//                maxLines: 1,
-//              ),
-//              padding: EdgeInsets.fromLTRB(20, 0, 20, 50),
-//            ),
-//
-//            // about me
-//            Container(
-//              child: Row (
-//                children: <Widget>[
-//                  Text (
-//                    'About Me: '
-//                  ),
-//                  TextFormField(
-//                    controller: _aboutMeController,
-//                    maxLines: null,
-//                  ),
-//                ],
-//              ),
-//              padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-//            ),
-//
-//            // save button
-//            Container (
-//              child: FloatingActionButton (
-//                onPressed: () => setState(() {
-//                  Firestore.instance
-//                      .collection('users')
-//                      .document(id)
-//                      .updateData({'aboutMe': _aboutMeController.text, 'grade': int.parse(_gradeController.text)}).then((data) async {
-//                    await prefs.setString('aboutMe', _aboutMeController.text);
-//                    await prefs.setInt('grade', int.parse(_gradeController.text));
-//                  });
-//                  Navigator.of(context).pushReplacementNamed('/dashboard');
-//                }),
-//                child: Text (
-//                  'Save!'
-//                ),
-//                backgroundColor: Theme.of(context).buttonColor,
-//              ),
-//              padding: EdgeInsets.fromLTRB(30.0, 15.0, 30.0, 15.0)
-//            ),
       ),
     );
   }

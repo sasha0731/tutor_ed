@@ -128,7 +128,7 @@ class ProfileState extends State<Profile> {
                 ),
               ),
               Padding (
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 25),
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 30),
               ),
 
               // about me
@@ -137,7 +137,7 @@ class ProfileState extends State<Profile> {
                   aboutMe,
                   style: new TextStyle(
                     color: Theme.of(context).textSelectionColor,
-                    fontSize: 20,
+                    fontSize: 18,
                   ),
                 ),
               ),

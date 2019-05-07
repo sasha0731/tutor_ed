@@ -42,7 +42,7 @@ class DashboardState extends State<Dashboard> {
     if (item.title == 'Log out') {
       auth.signOut(context);
     } else if (item.title == 'Settings') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Settings()));
+      Navigator.of(context).pushReplacementNamed('/settings');
     }
   }
 

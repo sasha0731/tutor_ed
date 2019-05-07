@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>472994098418-58ih3s6e10g1md6b92f6qpdvp7nqc4bp.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.472994098418-58ih3s6e10g1md6b92f6qpdvp7nqc4bp</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCDArMN7laEnG-LSKVWlFG6LiYDk0zQt1g</string>
+	<key>GCM_SENDER_ID</key>
+	<string>472994098418</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.sahilshah.tutorEd</string>
+	<key>PROJECT_ID</key>
+	<string>tutored-fe716</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tutored-fe716.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:472994098418:ios:11a59bbf18ee0cec</string>
+	<key>DATABASE_URL</key>
+	<string>https://tutored-fe716.firebaseio.com</string>
+</dict>
+</plist>
