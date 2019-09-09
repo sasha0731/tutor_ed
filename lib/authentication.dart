@@ -7,9 +7,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class Authentication {
-
   static final Authentication _authentication = new Authentication._internal();
-
   factory Authentication() {
     return _authentication;
   }
